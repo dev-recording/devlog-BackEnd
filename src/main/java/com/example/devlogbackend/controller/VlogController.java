@@ -21,13 +21,13 @@ public class VlogController {
     }
 
         @GetMapping("/user/{email}")
-        public String home(@PathVariable String email){
+        public VlogDTO home(@PathVariable String email){
 
             logger.debug("Received email: {}",email);
 
             VlogDTO dto = vlogService.getUserDTOById(email);
             System.out.println("안녕");
-            return dto.getEmail();
+            return dto;
 
 
         }
