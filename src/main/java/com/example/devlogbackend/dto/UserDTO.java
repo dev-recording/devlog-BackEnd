@@ -7,13 +7,14 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class VlogDTO {
+public class UserDTO {
 
-    private String email;
 
     private String id;
 
-    private String name;
+    private String email;
 
-    private String product;
+    private String code;
+
+    private String expired_time;
 }
