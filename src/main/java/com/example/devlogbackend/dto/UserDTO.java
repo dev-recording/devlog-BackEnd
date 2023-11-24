@@ -5,16 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Data
-@Getter
-@Setter
+
 public class UserDTO {
+    private int hashcode;
 
-
-    private String id;
+    private String name;
 
     private String email;
 
-    private String code;
+    private int id;
 
-    private String expired_time;
+    private String comment;
 }
