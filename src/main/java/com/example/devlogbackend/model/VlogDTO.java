@@ -1,4 +1,4 @@
-package com.example.devlogbackend.dto;
+package com.example.devlogbackend.model;
 
 import lombok.Data;
 import lombok.Getter;

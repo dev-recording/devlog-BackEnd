@@ -1,6 +1,6 @@
 package com.example.devlogbackend.service;
 
-import com.example.devlogbackend.dto.VlogDTO;
+import com.example.devlogbackend.model.VlogDTO;
 import com.example.devlogbackend.mapper.VlogMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
