@@ -16,13 +16,14 @@ public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public UserDTO getUserDTOById(int insertUser){
+    public UserDTO getUserJoin(int insertUser){
         System.out.println("service:"+insertUser);
 
         logger.debug("getUserDTOById 호출됨");
 
         return userMapper.insertUserDTOById(insertUser);
     }
+
     public UserDTO save(UserDTO userDTO) {
 
 
@@ -43,6 +44,10 @@ public class UserService {
 
         // 저장된 사용자 정보를 반환
         return userDTO;
+    }
+
+    public UserDTO selectUserlogin(String email ) {
+        return userMapper.selectUserlogin(email);
     }
 }
 

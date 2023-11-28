@@ -12,4 +12,7 @@ public interface UserMapper {
     int insertUser(UserDTO userDTO);
 
     UserDTO insertUserDTOById(int insertUser);
+
+    @Select("SELECT email, id, name, comment FROM study_db.user WHERE email = #{email}")
+    UserDTO selectUserlogin(@Param("email") String email);
 }
