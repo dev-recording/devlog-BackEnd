@@ -2,11 +2,14 @@ package com.example.devlogbackend.controller;
 
 import com.example.devlogbackend.dto.UserDTO;
 import com.example.devlogbackend.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Random;
 
@@ -15,6 +18,7 @@ import java.util.Random;
 public class UserController {
 
     private final UserService userService;
+
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
        @GetMapping("/join")
@@ -51,7 +55,18 @@ public class UserController {
             return dto ;
         }
         @PostMapping("/login")
-        public ResponseEntity<String> login(){
-           return ResponseEntity.ok().body("token");
+        public ResponseEntity<Integer> login(@RequestBody UserDTO userDTO, HttpServletResponse response ){
+            userService.login(userDTO.getEmail());
+            String token = userService.login(userDTO.getEmail());
+            Cookie cookie = new Cookie("authtoken",token);
+            cookie.setPath("/"); // 쿠키의 경로 설정
+
+            // 쿠키를 HttpServletResponse에 추가합니다.
+            response.addCookie(cookie);
+
+           return ResponseEntity.ok().body(userDTO.getId());
+
         }
-        }
+
+
+}

@@ -2,9 +2,11 @@ package com.example.devlogbackend.service;
 
 import com.example.devlogbackend.dto.UserDTO;
 import com.example.devlogbackend.mapper.UserMapper;
+import com.example.devlogbackend.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -15,7 +17,9 @@ public class UserService {
     private final UserMapper userMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-
+    @Value("${jwt.secret}")
+    private String secretKey;
+    private Long expiredMs = 1000*60*60l;
     public UserDTO getUserJoin(int insertUser){
         System.out.println("service:"+insertUser);
 
@@ -48,6 +52,10 @@ public class UserService {
 
     public UserDTO selectUserlogin(String email ) {
         return userMapper.selectUserlogin(email);
+    }
+
+    public String login(String email){
+        return JwtUtil.createJwt(email,secretKey,expiredMs);
     }
 }
 
