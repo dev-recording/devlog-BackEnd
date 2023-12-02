@@ -1,16 +1,24 @@
 package com.example.devlogbackend.controller;
 
+import com.example.devlogbackend.dto.MailDTO;
 import com.example.devlogbackend.dto.UserDTO;
+import com.example.devlogbackend.service.EmailService;
 import com.example.devlogbackend.service.UserService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.servlet.http.Cookie;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
+import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 @RestController
@@ -18,6 +26,7 @@ import java.util.Random;
 public class UserController {
 
     private final UserService userService;
+    private  final EmailService emailService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -58,15 +67,50 @@ public class UserController {
         public ResponseEntity<Integer> login(@RequestBody UserDTO userDTO, HttpServletResponse response ){
             userService.login(userDTO.getEmail());
             String token = userService.login(userDTO.getEmail());
-            Cookie cookie = new Cookie("authtoken",token);
-            cookie.setPath("/"); // 쿠키의 경로 설정
 
-            // 쿠키를 HttpServletResponse에 추가합니다.
+          Cookie cookie = new Cookie("authToken",token);
+           cookie.setPath("/"); // 쿠키의 경로 설정
+
+           // 쿠키를 HttpServletResponse에 추가합니다.
             response.addCookie(cookie);
 
-           return ResponseEntity.ok().body(userDTO.getId());
+           return ResponseEntity.ok().body(userDTO.getId());//id
 
         }
 
+        @PostMapping("/send-email/{code}")
+        public MailDTO sendEmail(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
 
-}
+            String code = generateRandomCode();
+
+            String subject = "이메일 인증";
+            String text = "인증 코드: " + code; // 코드 생성 로직은 여기에 추가
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.HOUR, 1);
+            Date expiredTime = calendar.getTime();
+
+            // 실제 이메일 발송
+            MailDTO mailDTO = emailService.sendEmail(email, code, expiredTime);
+
+            redirectAttributes.addFlashAttribute("message", "이메일을 전송했습니다. 이메일을 확인하세요.");
+
+            return mailDTO;
+        }
+
+
+
+        public String generateRandomCode() {
+
+            SecureRandom secureRandom = new SecureRandom();
+
+            byte[] randomBytes = new byte[32];
+            secureRandom.nextBytes(randomBytes);
+            String code = Base64.getEncoder().encodeToString(randomBytes);
+            return code;
+        }
+
+    }
+
+

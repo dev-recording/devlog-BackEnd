@@ -1,57 +1,61 @@
 package com.example.devlogbackend.configration;
 
-import io.jsonwebtoken.Jwt;
+
+import com.example.devlogbackend.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.token.TokenService;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.security.config.Customizer.withDefaults;
+import javax.crypto.SecretKey;
 
+//시큐리티를 만듬으로써 인증을 만들어준거임
 @Configuration
 @EnableWebSecurity
-public class AuthenticationConfig  extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+@RequiredArgsConstructor
+public class AuthenticationConfig /*extends WebSecurityConfigurerAdapter */{
+
+
+    private final UserService userService;
+    @Value("${jwt.secret}")
+    private String secretKey;
+
 
     @Bean
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, Jwt jwt, TokenService tokenService) throws Exception {
-        Exception {
-            http
-                    .authorizeRequests()
-                    .requestMatchers("/api/members/signup", "/api/members/signin").permitAll()
-                    .anyRequest().authenticated()
-                    .and().headers()
-                    .disable()
-                    .httpBasic()
-                    .disable()
-                    .rememberMe()
-                    .disable()
-                    .logout()
-                    .disable()
-                    .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
-                    .exceptionHandling()
-                    .accessDeniedHandler(accessDeniedHandler())
-                    .authenticationEntryPoint(authenticationEntryPoint())
-                    .and()
-                    .addFilterBefore(jwtAuthenticationFilter(jwt, tokenService), UsernamePasswordAuthenticationFilter.class);
-
-            return http.build();
-
-
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity)throws Exception{
+        return httpSecurity
+                .httpBasic().disable()
+                .csrf().disable()
+                .cors().and()
+                .authorizeHttpRequests()
+                .antMatchers("/login","/join").permitAll()
+                .antMatchers(HttpMethod.POST,"login").authenticated()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilterBefore(new JwtFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
+                .build();
+    /*@Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 생성 비활성화
+                .and()
+                .csrf().disable() // CSRF 보안 비활성화
+                .authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/authenticated-endpoint").authenticated()
+                .anyRequest().permitAll(); // 다른 요청은 모두 허용*/
+    }
 }
 
-    private <__TMP__> __TMP__ accessDeniedHandler() {
-    }
 
-    private <__TMP__> __TMP__ accessDeniedHandler() {
-    }
+

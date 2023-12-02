@@ -5,6 +5,19 @@ spring:
         username: ysi
         password: 1234
 
+    mail:
+        host: smtp.naver.com
+        port: 465  # SMTP 포트 (보통 587 또는 465를 사용)
+        username: did756984@naver.com
+        password:  # Naver 이메일 비밀번호
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true  # STARTTLS 사용
+                        isSSL: true
+
 mybatis:
     mapper-locations: classpath:/mapper/*.xml
 
@@ -17,7 +30,5 @@ spring.jpa:
 
 jwt:
     secret: hello.world.ee.ff
-
-
 
 
