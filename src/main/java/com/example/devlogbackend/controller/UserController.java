@@ -78,7 +78,7 @@ public class UserController {
 
         }
 
-        @PostMapping("/send-email/{code}")
+        @PostMapping("/send-email")
         public MailDTO sendEmail(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
 
             String code = generateRandomCode();
