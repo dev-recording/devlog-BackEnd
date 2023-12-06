@@ -14,7 +14,7 @@ public class MailConfig {
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.naver.com");
-        mailSender.setPort(587);
+        mailSender.setPort(465);
         mailSender.setUsername("did756984@naver.com");
         mailSender.setPassword("did4037018");
 
@@ -22,7 +22,6 @@ public class MailConfig {
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.starttls.required", "true");
         props.put("mail.debug", "true");
 
         return mailSender;

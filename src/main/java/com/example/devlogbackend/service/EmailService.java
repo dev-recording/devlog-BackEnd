@@ -19,7 +19,6 @@ import java.util.Date;
     public MailDTO sendEmail(String email, String code, Date expiredTime) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setFrom("did756984@naver.com");
         message.setSubject("이메일 인증");
         message.setText("인증 코드: " + code + " 유효 기간: " + expiredTime);
 
