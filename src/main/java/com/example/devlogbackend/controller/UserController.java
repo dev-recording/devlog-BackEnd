@@ -28,6 +28,7 @@ public class UserController {
     private final UserService userService;
     private  final EmailService emailService;
 
+
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
        @GetMapping("/join")
@@ -78,6 +79,22 @@ public class UserController {
 
         }
 
+/*
+  @GetMapping("/login/github")
+    public String githubLogin() {
+        return "http://localhost:8080/login/oauth2/code/github";
+    }
+
+    @GetMapping("/login/github/callback")
+    public String githubCallback() {
+        return "redirect:/"; // 로그인 후 리디렉션할 경로
+    }
+
+*/
+
+
+
+
         @PostMapping("/send-email")
         public MailDTO sendEmail(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
 
@@ -93,6 +110,16 @@ public class UserController {
 
             // 실제 이메일 발송
             MailDTO mailDTO = emailService.sendEmail(email, code, expiredTime);
+
+     /*       if (mailDTO.isSuccess()) {
+                // 이메일 발송 성공한 경우, 원하는 페이지로 리디렉션
+                return "redirect:/signup";
+            } else {
+                // 이메일 발송 실패한 경우, 에러 메시지를 리디렉션 시킴
+                redirectAttributes.addFlashAttribute("error", mailDTO.getErrorMessage());
+                return "redirect:/error-page"; // 에러 페이지로 리디렉션 또는 다른 처리를 수행
+            }*/
+
 
             redirectAttributes.addFlashAttribute("message", "이메일을 전송했습니다. 이메일을 확인하세요.");
 

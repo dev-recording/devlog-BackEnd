@@ -4,12 +4,20 @@ spring:
         url: jdbc:mysql://127.0.0.1:3306/study_db?useSSL=false&serverTimezone=Asia/Seoul
         username: ysi
         password: 1234
-
+    security:
+            oauth2:
+                client:
+                    registration:
+                        github:
+                            client-id: a67142256bd698af3808
+                            client-secret: 5fb5e5d685bb5ace0eb59f741f5aa90df7a906ac
+                            redirect-uri: http://localhost:8080/login/oauth2/code/github
+                            scope: user
     mail:
         host: smtp.naver.com
-        port: 587  # SMTP 포트 (보통 587 또는 465를 사용)
-        username: did756984@naver.com
-        password:  # Naver 이메일 비밀번호
+        port: 465  # SMTP 포트 (보통 587 또는 465를 사용)
+        username: yysskk9652@naver.com
+        password: ysy9652
         properties:
             mail:
                 smtp:
@@ -17,6 +25,8 @@ spring:
                     starttls:
                         enable: true  # STARTTLS 사용
                         isSSL: true
+#                    custom:
+#                            frontend_url: http://localhost:3000/signup # 원하는 프론트엔드 URL로 변경
 
 mybatis:
     mapper-locations: classpath:/mapper/*.xml
@@ -30,5 +40,8 @@ spring.jpa:
 
 jwt:
     secret: hello.world.ee.ff
+
+
+
 
 

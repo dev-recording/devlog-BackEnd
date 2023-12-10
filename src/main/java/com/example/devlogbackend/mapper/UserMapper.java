@@ -1,5 +1,6 @@
 package com.example.devlogbackend.mapper;
 
+import com.example.devlogbackend.dto.MailDTO;
 import com.example.devlogbackend.dto.UserDTO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,4 +17,8 @@ public interface UserMapper {
 
     @Select("SELECT email, id, name, comment FROM study_db.user WHERE email = #{email}")
     UserDTO selectUserlogin(@Param("email") String email);
+
+
+    @Insert("INSERT INTO signup_email (code, expired_time, email) VALUES (#{code}, #{expiredTime}, #{email})")
+    int insertSignupEmail(MailDTO mailDTO);
 }
