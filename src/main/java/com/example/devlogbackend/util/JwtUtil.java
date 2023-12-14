@@ -20,6 +20,4 @@ public class JwtUtil {
             .signWith(SignatureAlgorithm.HS256,secretKey)
             .compact();
     }
-
-
 }

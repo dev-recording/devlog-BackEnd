@@ -3,6 +3,7 @@ package com.example.devlogbackend.controller;
 import com.example.devlogbackend.dto.MailDTO;
 import com.example.devlogbackend.dto.UserDTO;
 import com.example.devlogbackend.service.EmailService;
+import com.example.devlogbackend.service.GitHubOAuthService;
 import com.example.devlogbackend.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.servlet.http.Cookie;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -27,7 +29,7 @@ public class UserController {
 
     private final UserService userService;
     private  final EmailService emailService;
-
+    private final GitHubOAuthService gitHubOAuthService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -69,7 +71,7 @@ public class UserController {
             userService.login(userDTO.getEmail());
             String token = userService.login(userDTO.getEmail());
 
-          Cookie cookie = new Cookie("authToken",token);
+            Cookie cookie = new Cookie("authToken",token);
            cookie.setPath("/"); // 쿠키의 경로 설정
 
            // 쿠키를 HttpServletResponse에 추가합니다.
@@ -79,21 +81,18 @@ public class UserController {
 
         }
 
-/*
-  @GetMapping("/login/github")
-    public String githubLogin() {
-        return "http://localhost:8080/login/oauth2/code/github";
+    @GetMapping("/github/login")
+    public ResponseEntity<Void> redirectToGitHubLogin(HttpServletResponse response) {
+        String githubLoginUrl = gitHubOAuthService.generateGitHubLoginUrl();
+        return ResponseEntity.status(HttpStatus.FOUND).header("Location", githubLoginUrl).build();
     }
-
-    @GetMapping("/login/github/callback")
-    public String githubCallback() {
-        return "redirect:/"; // 로그인 후 리디렉션할 경로
+    @GetMapping("/github/callback")
+    public ResponseEntity<String> handleGitHubCallback(@RequestParam("code") String code) {
+        String accessToken = gitHubOAuthService.getAccessToken(code);
+        // GitHub으로부터 받은 엑세스 토큰을 저장하거나 처리
+        // 예: 사용자 정보를 가져오고 저장하거나 세션에 저장
+        return ResponseEntity.ok("GitHub OAuth2 인증이 완료되었습니다.");
     }
-
-*/
-
-
-
 
         @PostMapping("/send-email")
         public MailDTO sendEmail(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
@@ -110,16 +109,6 @@ public class UserController {
 
             // 실제 이메일 발송
             MailDTO mailDTO = emailService.sendEmail(email, code, expiredTime);
-
-     /*       if (mailDTO.isSuccess()) {
-                // 이메일 발송 성공한 경우, 원하는 페이지로 리디렉션
-                return "redirect:/signup";
-            } else {
-                // 이메일 발송 실패한 경우, 에러 메시지를 리디렉션 시킴
-                redirectAttributes.addFlashAttribute("error", mailDTO.getErrorMessage());
-                return "redirect:/error-page"; // 에러 페이지로 리디렉션 또는 다른 처리를 수행
-            }*/
-
 
             redirectAttributes.addFlashAttribute("message", "이메일을 전송했습니다. 이메일을 확인하세요.");
 

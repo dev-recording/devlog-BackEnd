@@ -39,7 +39,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.1'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation group: 'org.kohsuke', name: 'github-api', version: '1.125'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
 }
 
 tasks.named('test') {
