@@ -1,5 +1,6 @@
 package com.example.devlogbackend.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.context.annotation.PropertySource;
@@ -8,16 +9,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-
+@RequiredArgsConstructor
 public class GitHubOAuthService {
 
-    @Value("${github.client-id}") // application.properties 또는 application.yml에 설정된 값
+    @Value("${spring.security.oauth2.client.registration.github.client-id}") // application.properties 또는 application.yml에 설정된 값
     private String clientId;
 
-    @Value("${github.client-secret}") // application.properties 또는 application.yml에 설정된 값
+    @Value("${spring.security.oauth2.client.registration.github.client-secret}") // application.properties 또는 application.yml에 설정된 값
     private String clientSecret;
 
-    @Value("${github.redirect-uri}") // application.properties 또는 application.yml에 설정된 값
+    @Value("${spring.security.oauth2.client.registration.github.redirect-uri}") // application.properties 또는 application.yml에 설정된 값
     private String redirectUri;
 
     private final RestTemplate restTemplate = new RestTemplate();
