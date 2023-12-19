@@ -3,22 +3,16 @@ package com.example.devlogbackend.service;
 import com.example.devlogbackend.dto.MailDTO;
 import com.example.devlogbackend.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.Date;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
-    public class EmailService {
+    public class EmailServiceImp {
 
     private final JavaMailSender emailSender;
     private final UserMapper userMapper;
@@ -29,8 +23,8 @@ import java.util.Date;
         MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
 
         try {
-            helper.setTo("yysskk9652@naver.com");
-            helper.setFrom("yysskk9652@naver.com");
+            helper.setTo("did756984@naver.com");
+            helper.setFrom("did756984@naver.com");
             helper.setSubject("이메일 인증");
 
             String htmlContent = "인증 코드: " + code + " 유효 기간: " + expiredTime

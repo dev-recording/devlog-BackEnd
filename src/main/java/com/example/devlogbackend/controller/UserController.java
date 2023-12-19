@@ -1,8 +1,11 @@
 package com.example.devlogbackend.controller;
 
+import com.example.devlogbackend.dto.GithubDTO;
 import com.example.devlogbackend.dto.MailDTO;
 import com.example.devlogbackend.dto.UserDTO;
-import com.example.devlogbackend.service.EmailService;
+import com.example.devlogbackend.entity.GithubUser;
+import com.example.devlogbackend.repository.GithubUserRepository;
+import com.example.devlogbackend.service.EmailServiceImp;
 import com.example.devlogbackend.service.GitHubOAuthService;
 import com.example.devlogbackend.service.UserService;
 
@@ -28,8 +31,9 @@ import java.util.Random;
 public class UserController {
 
     private final UserService userService;
-    private  final EmailService emailService;
+    private  final EmailServiceImp emailServiceImp;
     private final GitHubOAuthService gitHubOAuthService;
+    private  final GithubUserRepository githubUserRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -86,12 +90,34 @@ public class UserController {
         String githubLoginUrl = gitHubOAuthService.generateGitHubLoginUrl();
         return ResponseEntity.status(HttpStatus.FOUND).header("Location", githubLoginUrl).build();
     }
-    @GetMapping("/github/callback")
-    public ResponseEntity<String> handleGitHubCallback(@RequestParam("code") String code) {
+
+    @GetMapping ("/github/callback")
+    public ResponseEntity<String> handleGitHubCallback(@RequestParam("code") String code){
         String accessToken = gitHubOAuthService.getAccessToken(code);
-        // GitHub으로부터 받은 엑세스 토큰을 저장하거나 처리
-        // 예: 사용자 정보를 가져오고 저장하거나 세션에 저장
-        return ResponseEntity.ok("GitHub OAuth2 인증이 완료되었습니다.");
+
+        // GitHub API를 사용하여 사용자 정보 가져오기
+        GithubDTO githubDTO = GitHubOAuthService.getUserInfo(accessToken);
+
+        // TODO: 사용자 정보를 저장 또는 처리 (예: 데이터베이스에 사용자 정보 저장)
+        // GithubDTO를 GithubUser 엔티티로 변환 (필요에 따라)
+        GithubUser githubUser = new GithubUser();
+        githubUser.setEmail(githubDTO.getEmail());
+        githubUser.setPassword(githubDTO.getPassword());
+
+        githubUser.setId(1L);
+        // 사용자 정보를 데이터베이스에 저장
+
+        try {
+            // 사용자 정보를 데이터베이스에 저장
+            githubUserRepository.save(githubUser);
+        } catch (Exception e) {
+            // 예외 처리: 데이터베이스 작업 중에 예외가 발생할 수 있으므로 예외 처리를 고려해야 합니다.
+            e.printStackTrace(); // 예외 처리 방식을 선택하여 수정해야 합니다.
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("데이터베이스 오류");
+        }
+//        return ResponseEntity.ok("GitHub OAuth2 인증이 완료되었습니다.");
+
+        return ResponseEntity.ok("Received code: " + code);
     }
 
         @PostMapping("/send-email")
@@ -108,7 +134,7 @@ public class UserController {
             Date expiredTime = calendar.getTime();
 
             // 실제 이메일 발송
-            MailDTO mailDTO = emailService.sendEmail(email, code, expiredTime);
+            MailDTO mailDTO = emailServiceImp.sendEmail(email, code, expiredTime);
 
             redirectAttributes.addFlashAttribute("message", "이메일을 전송했습니다. 이메일을 확인하세요.");
 
