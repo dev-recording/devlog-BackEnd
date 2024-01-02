@@ -1,10 +1,10 @@
 spring:
-
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
         url: jdbc:mysql://127.0.0.1:3306/study_db?useSSL=false&serverTimezone=Asia/Seoul
         username: ysi
         password: 1234
+
     security:
             oauth2:
                 client:
@@ -13,22 +13,37 @@ spring:
                             client-id: a67142256bd698af3808
                             client-secret: 5fb5e5d685bb5ace0eb59f741f5aa90df7a906ac
                             redirect-uri: http://localhost:8080/github/callback
-
-
+                        facebook:
+                                client-id: 885389613180674
+                                client-secret: a5c08a77e4eb6dd36bcf14f93ca54de6
+                                redirect-uri: https://localhost:8080/login/oauth2/code/facebook
     mail:
-        host: smtp.naver.com
-        port: 465  # SMTP 포트 (보통 587 또는 465를 사용)
-        username: did756984
-        password: did4037018
+        host: smtp.gmail.com
+        port: 587
+        username: yangppokki@gmail.com
+        password: qigzabzpegjftzlj
         properties:
             mail:
                 smtp:
-                    auth: true
+            starttls:
+                    enable: true
                     starttls:
-                        enable: true  # STARTTLS 사용
-                        isSSL: true
-#                    custom:
-#                            frontend_url: http://localhost:3000/signup # 원하는 프론트엔드 URL로 변경
+                     required: true
+            auth: true
+
+
+            host: smtp.naver.com
+            port: 465  # SMTP 포트 (보통 587 또는 465를 사용)
+            username: did756984
+            password: did4037018
+            properties:
+                mail:
+                    smtp:
+                        auth: true
+                        starttls:
+                            enable: true  # STARTTLS 사용
+                            isSSL: true
+
 
 mybatis:
     mapper-locations: classpath:/mapper/*.xml

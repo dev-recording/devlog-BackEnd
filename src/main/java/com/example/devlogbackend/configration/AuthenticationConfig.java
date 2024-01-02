@@ -54,6 +54,14 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutSuccessUrl("/"); // 로그아웃 후 리디렉션될 URL
+        // 페이스북 OAuth2 로그인을 위한 추가 설정
+        http
+                .oauth2Login()
+                .loginPage("/facebook/login") // 페이스북 로그인 페이지 URL
+                .defaultSuccessUrl("/facebook/callback") // 로그인 성공 후 리디렉션될 URL
+                .and()
+                .logout()
+                .logoutSuccessUrl("/"); // 로그아웃 후 리디렉션될 URL
     }
 
 

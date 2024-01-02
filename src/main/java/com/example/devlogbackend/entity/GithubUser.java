@@ -1,3 +1,4 @@
+/*
 package com.example.devlogbackend.entity;
 
 import lombok.Data;
@@ -18,3 +19,4 @@ public class GithubUser {
 
     // Getter, Setter, 생성자 등 필요한 메서드를 추가합니다.
 }
+*/
